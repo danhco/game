@@ -1,2 +1,2 @@
-# spring-spark-example
-An example of setting up Spring-Boot with Spark.
+# Export on Command
+Spark export on command

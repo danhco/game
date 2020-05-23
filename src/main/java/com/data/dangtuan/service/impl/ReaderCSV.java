@@ -1,12 +1,12 @@
-package com.data.dangtuan;
+package com.data.dangtuan.service.impl;
 
 import static org.apache.spark.sql.functions.col;
 import static org.apache.spark.sql.functions.unix_timestamp;
 
+import com.data.dangtuan.utils.Utils;
 import java.io.IOException;
-import java.util.Properties;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.log4j.Logger;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SaveMode;
@@ -15,12 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
+@Log4j2
 public class ReaderCSV {
-
-  private Logger log = Logger.getLogger(ReaderCSV.class);
 
   @Autowired
   private SparkSession sparkSession;
@@ -43,12 +42,14 @@ public class ReaderCSV {
   @Value("${spark.jdbc}")
   private String sparkReaderURL;
 
+  @Value("${file.path}")
+  private String filePath;
+
 
   public String runAnalyzeBasicDataSource() throws IOException {
     String status = "File imported : ";
     try {
-      Resource[] resources = applicationContext.getResources(
-          "file:/Users/tuan.nguyen.oddle/Documents/vnp1/data/*");
+      Resource[] resources = applicationContext.getResources(filePath);
       for (int i = 0; i < resources.length; i++) {
         if (resources[i].getFile().exists()) {
           String absolutePath = resources[i].getFile().getAbsolutePath();
@@ -56,20 +57,6 @@ public class ReaderCSV {
           status = status + ", " + absolutePath;
         }
       }
-      // String realPath = "classpath:/000000_0.csv";
-      // Resource res = resourceLoader.getResource(realPath);
-      // Dataset<Row> peopleDFCsv = sparkSession.read().format("csv").option("sep", ",").option("inferSchema", "true").option("header", "true").load(
-      // res.getFile().getAbsolutePath()).filter("email LIKE '%@gmail.com%' OR email LIKE '%@hotmail%'").select(
-      // "accountname",
-      // "email",
-      // "fullname",
-      // "gender",
-      // "birthday",
-      // "telephone",
-      // "address",
-      // "email2");
-      // peopleDFCsv.show();
-      // insertDataThroughJdbcDataset(peopleDFCsv);
     } catch (Exception e) {
       log.error("Error : " + ExceptionUtils.getStackTrace(e));
       return "Error!";
@@ -80,7 +67,7 @@ public class ReaderCSV {
 
   public void insertDataThroughJdbcDataset(Dataset<Row> jdbcDF2) {
     jdbcDF2.write().mode(SaveMode.Append)
-        .jdbc(sparkURL, sparkSchema, initConnection(sparkUser, sparkPass));
+        .jdbc(sparkURL, sparkSchema, Utils.initConnection(sparkUser, sparkPass));
   }
 
 
@@ -88,7 +75,7 @@ public class ReaderCSV {
     Dataset<Row> jdbcDF2 = sparkSession.read().jdbc(
         sparkReaderURL,
         sparkSchema,
-        initConnection(sparkUser, sparkPass));
+        Utils.initConnection(sparkUser, sparkPass));
     return jdbcDF2;
   }
 
@@ -115,11 +102,4 @@ public class ReaderCSV {
     }
   }
 
-
-  private Properties initConnection(String userName, String password) {
-    Properties connectionProperties = new Properties();
-    connectionProperties.put("user", userName);
-    connectionProperties.put("password", password);
-    return connectionProperties;
-  }
 }

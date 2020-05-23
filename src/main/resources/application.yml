@@ -1,0 +1,17 @@
+app:
+  name: spark export
+spark:
+  home: /Documents/spark-2.4.5-bin-hadoop2.7
+  jdbc: com.mysql.jdbc.Driver
+  jdbc.url: jdbc:mysql://localhost:3306/reports?useSSL=false
+  schema: reports.customer
+  user: root
+  password: 123456
+master:
+  uri: local
+file:
+  path: file:/Documents/vnp1/data/*
+logging:
+  file: /Documents/vnp1/log.txt
+  pattern:
+    level: info

@@ -1,4 +1,4 @@
-package com.data.dangtuan;
+package com.data.dangtuan.utils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,9 +10,6 @@ public class EmailUtils {
   private Pattern pattern;
   private Matcher matcher;
 
-  /**
-   *
-   */
   private EmailUtils() {
     pattern = Pattern.compile(EMAIL_PATTERN);
   }

@@ -7,7 +7,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class SparkExperimentApplicationTests {
+public class ExportOnCommandApplicationTests {
 
   @Test
   public void contextLoads() {

@@ -1,0 +1,75 @@
+plugins {
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'java'
+    id 'net.ltgt.apt' version '0.15'
+    id 'org.springframework.boot' version '2.1.7.RELEASE'
+}
+
+
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'net.ltgt.apt-eclipse'
+apply plugin: 'net.ltgt.apt-idea'
+
+group = 'com.dangtuan'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    jcenter()
+}
+
+configurations {
+    //https://docs.gradle.org/current/userguide/viewing_debugging_dependencies.html
+    //gradle -q dependencies --configuration scm
+    scm
+}
+
+dependencies {
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapStructVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${jacksonDateFormatVersion}"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-joda:${jacksonDataTypeVersion}"
+    implementation "io.jsonwebtoken:jjwt:${jjwtJsonWebTokenVersion}"
+    implementation "io.springfox:springfox-swagger-ui:${springfoxSwaggerVersion}"
+    implementation "io.swagger:swagger-annotations:${swaggerAnnotationVersion}"
+    implementation "io.swagger:swagger-models:${swaggerAnnotationVersion}"
+    implementation "javax.inject:javax.inject:${javaxInjectVersion}"
+    implementation "org.apache.commons:commons-lang3:${commonsLangVersion}"
+    implementation "org.apache.httpcomponents:httpclient:${httpClientVersion}"
+    implementation "org.elasticsearch.client:elasticsearch-rest-high-level-client:${elasticSearchVersion}"
+    implementation "org.elasticsearch:elasticsearch:${elasticSearchVersion}"
+    implementation "org.json:json:${orgJsonVersion}"
+    implementation "org.liquibase:liquibase-core:${liquibaseVersion}"
+    implementation "org.mapstruct:mapstruct:${mapStructVersion}"
+    implementation "org.projectlombok:lombok:${lombokVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.kafka:spring-kafka:${springKafkaVersion}"
+    implementation("org.apache.spark:spark-core_2.12:${sparkVersion}")
+            {
+                exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+                exclude group: 'log4j', module: 'log4j'
+            }
+    implementation "org.apache.spark:spark-sql_2.12:${sparkVersion}"
+    implementation("io.springfox:springfox-swagger2:${springfoxSwaggerVersion}")
+            {
+                exclude group: 'io.swagger', module: 'swagger-annotations'
+                exclude group: 'io.swagger', module: 'swagger-models'
+            }
+    runtimeOnly "org.postgresql:postgresql:${postgersqlVersion}"
+    runtimeOnly "mysql:mysql-connector-java:8.0.20"
+    testImplementation "org.mock-server:mockserver-netty:${mockServerVersion}"
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation "org.testng:testng:${testngVersion}"
+    implementation "io.grpc:grpc-protobuf:${grpcVersion}"
+    implementation "io.grpc:grpc-stub:${grpcVersion}"
+    implementation "com.google.protobuf:protobuf-java-util:${protobufVersion}"
+    runtimeOnly "io.grpc:grpc-netty-shaded:${grpcVersion}"
+    testImplementation "io.grpc:grpc-testing:${grpcVersion}"
+
+    scm "org.apache.spark:spark-core_2.12:${sparkVersion}"
+    scm "org.apache.spark:spark-sql_2.12:${sparkVersion}"
+}

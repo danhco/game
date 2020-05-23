@@ -1,7 +1,9 @@
-package com.data.dangtuan;
+package com.data.dangtuan.service.impl;
 
 import static org.apache.spark.sql.functions.col;
 
+import com.data.dangtuan.dto.Count;
+import com.data.dangtuan.dto.Word;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -11,9 +13,9 @@ import org.apache.spark.sql.RelationalGroupedDataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class WordCount {
 
   @Autowired

@@ -1,4 +1,4 @@
-package com.data.dangtuan;
+package com.data.dangtuan.config;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;
@@ -12,7 +12,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 
 @Configuration
-@PropertySource("classpath:application.properties")
+@PropertySource("classpath:application.yml")
 public class ApplicationConfig {
 
   @Autowired
@@ -48,7 +48,7 @@ public class ApplicationConfig {
   @Bean
   public SparkSession sparkSession() {
     return SparkSession.builder().sparkContext(javaSparkContext().sc())
-        .appName("Java Spark SQL basic example").getOrCreate();
+        .appName(appName).getOrCreate();
   }
 
 }

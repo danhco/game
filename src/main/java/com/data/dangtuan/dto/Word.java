@@ -1,13 +1,11 @@
-package com.data.dangtuan;
+package com.data.dangtuan.dto;
 
 public class Word {
 
   private String word;
 
-
   public Word() {
   }
-
 
   public Word(String word) {
     this.word = word;
