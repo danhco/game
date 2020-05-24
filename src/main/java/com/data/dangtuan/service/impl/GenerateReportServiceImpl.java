@@ -1,8 +1,11 @@
 package com.data.dangtuan.service.impl;
 
+import com.data.dangtuan.dto.Customer;
+import com.data.dangtuan.dto.CustomerNotification;
 import com.data.dangtuan.service.GenerateReportService;
 import com.data.dangtuan.utils.Utils;
 import com.data.dangtuan.utils.constants.AppConstants;
+import java.util.List;
 import java.util.Objects;
 import org.apache.spark.api.java.function.MapFunction;
 import org.apache.spark.sql.Dataset;
@@ -35,23 +38,20 @@ public class GenerateReportServiceImpl implements GenerateReportService {
   @Autowired
   private SparkSession spark;
 
-  public Dataset<String> getTopNCustomers(final Long top) {
-    Dataset<Row> jdbcDF2 = spark.read()
+  public List<CustomerNotification> getTopNCustomers(final Long top) {
+    Dataset<Row> customerDataSet = spark.read()
         .jdbc(sparkURL, sparkSchema, Utils.initConnection(sparkUser, sparkPass));
 
-    jdbcDF2.createOrReplaceTempView("customer");
-    final String limit = Objects.nonNull(top) ? "limit " + top : ";";
-    Dataset<Row> teenagersDF = spark
-        .sql("SELECT * FROM customer " + limit);
+    Dataset<Row> notificationDataSet = spark.read()
+        .jdbc(sparkURL, "reports.notification", Utils.initConnection(sparkUser, sparkPass));
 
-    Encoder<String> stringEncoder = Encoders.STRING();
-    Dataset<String> teenagerNamesByIndexDF = teenagersDF.map(
-        (MapFunction<Row, String>) row -> "Name: " + row.getString(0),
-        stringEncoder);
+    return customerDataSet.filter(customerDataSet.col("email").like("%3%")).as("cu")
+        .join(notificationDataSet.as("no"),
+            customerDataSet.col("email").equalTo(notificationDataSet.col("email")))
+        .select("no.email", "content", "accountname").as(Encoders.bean(CustomerNotification.class))
+        .collectAsList();
 
-    teenagerNamesByIndexDF.show();
-
-    return teenagerNamesByIndexDF.toJSON();
+//    this.runSQLDataSet(getDataSetEncoder(), top);
   }
 
   public void writeCustomer(final Dataset<Row> jdbcDF, final String schemaTablename) {
@@ -70,4 +70,29 @@ public class GenerateReportServiceImpl implements GenerateReportService {
         .load();
   }
 
+  public Dataset<Customer> getDataSetEncoder() {
+    Dataset<Customer> customerDataSet = spark.read()
+        .jdbc(sparkURL, sparkSchema, Utils.initConnection(sparkUser, sparkPass)).as(Encoders.bean(
+            Customer.class));
+
+    customerDataSet.foreach(customer -> {
+      System.out.println(customer.getEmail());
+    });
+
+    return customerDataSet;
+  }
+
+  public void runSQLDataSet(final Dataset<Customer> customerDataSet, final Long top) {
+    customerDataSet.createOrReplaceTempView("customer");
+    final String limit = Objects.nonNull(top) ? "limit " + top : ";";
+    Dataset<Row> teenagersDF = spark
+        .sql("SELECT * FROM customer " + limit);
+
+    Encoder<String> stringEncoder = Encoders.STRING();
+    Dataset<String> teenagerNamesByIndexDF = teenagersDF.map(
+        (MapFunction<Row, String>) row -> "Name: " + row.getString(0),
+        stringEncoder);
+
+    teenagerNamesByIndexDF.show();
+  }
 }

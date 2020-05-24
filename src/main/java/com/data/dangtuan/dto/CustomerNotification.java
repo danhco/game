@@ -7,14 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Customer {
+public class CustomerNotification {
 
-  private String accountName;
   private String email;
-  private String fullName;
-  private String gender;
-  private String birthday;
-  private String telephone;
-  private String email2;
-
+  private String content;
+  private String accountname;
 }

@@ -1,13 +1,13 @@
 package com.data.dangtuan.controller;
 
 import com.data.dangtuan.dto.Count;
+import com.data.dangtuan.dto.CustomerNotification;
 import com.data.dangtuan.service.GenerateReportService;
 import com.data.dangtuan.service.impl.ReaderCSV;
 import com.data.dangtuan.service.impl.WordCount;
 import com.data.dangtuan.utils.constants.AppConstants;
 import java.io.IOException;
 import java.util.List;
-import org.apache.spark.sql.Dataset;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +42,7 @@ public class ApiController {
   }
 
   @GetMapping(value = AppConstants.GET_TOP_API)
-  public ResponseEntity<Dataset<String>> getTopN(@RequestParam final Long limit) {
+  public ResponseEntity<List<CustomerNotification>> getTopN(@RequestParam final Long limit) {
     return new ResponseEntity<>(generateReportService.getTopNCustomers(limit), HttpStatus.OK);
   }
 }

@@ -1,6 +1,7 @@
 package com.data.dangtuan.service;
 
-import org.apache.spark.sql.Dataset;
+import com.data.dangtuan.dto.CustomerNotification;
+import java.util.List;
 
 public interface GenerateReportService {
 
@@ -10,5 +11,5 @@ public interface GenerateReportService {
    * @param top number customer
    * @return customer
    */
-  Dataset<String> getTopNCustomers(final Long top);
+  List<CustomerNotification> getTopNCustomers(final Long top);
 }
